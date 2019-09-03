@@ -1,4 +1,4 @@
-package main
+package dynamic_vmap
 
 import (
 	"encoding/xml"
