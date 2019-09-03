@@ -12,9 +12,7 @@ jobs:
       - run:
           name: run build
           command: |
-            dep ensure
-            mkdir dist
-            cd dist
+            dep ensure && mkdir dist && cd dist
             go build -v ../
       - add_ssh_keys
       - run:
