@@ -1,0 +1,13 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/favish/dynamic-vmap
+    steps:
+      - checkout
+      - run:
+          name: run build
+          command: |
+            dep ensure
+            go build -v
