@@ -39,6 +39,7 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 	if len(fkeys) > 0  {
 		//u, _ := url.Parse(fkeys[0])
 		w.Header().Set("Access-Control-Allow-Origin", fkeys[0])
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
 	}
 
 	var test vmap.VMAP = vmap.VMAP{
