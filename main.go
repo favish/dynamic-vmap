@@ -6,7 +6,7 @@ import (
 	"github.com/favish/vmap"
 	"log"
 	"net/http"
-	"net/url"
+	//"net/url"
 )
 
 func main() {
@@ -35,10 +35,10 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 	descriptionUrl := dkeys[0]
 
 	// also require referrer to set CORS
-	fkeys, fok := r.URL.Query()["referrer"]
-	if fok || len(fkeys[0]) < 1 {
-		u, _ := url.Parse(fkeys[0])
-		w.Header().Set("Access-Control-Allow-Origin", u.Host)
+	fkeys, _ := r.URL.Query()["referrer"]
+	if len(fkeys) > 0  {
+		//u, _ := url.Parse(fkeys[0])
+		w.Header().Set("Access-Control-Allow-Origin", fkeys[0])
 	}
 
 	var test vmap.VMAP = vmap.VMAP{
