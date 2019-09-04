@@ -6,6 +6,7 @@ import (
 	"github.com/favish/vmap"
 	"log"
 	"net/http"
+	"net/url"
 )
 
 func main() {
@@ -19,31 +20,27 @@ var (
 )
 
 func HelloServer(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	// Tell the browsers what to do with it
     //TODO: Consider reasonable cache tags, to reduce number of requests from clients
 
-	href := r.URL.Query()["href"];
-
-	// Get the required href query param or tell them all is lost.
-	keys, ok := r.URL.Query()["description_url"]
-
-	if !ok || len(keys[0]) < 1 {
+	// Get the required descruption query param or tell them all is lost.
+	dkeys, dok := r.URL.Query()["description_url"]
+	if !dok || len(dkeys[0]) < 1 {
 		log.Println("")
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("500 - Url Param 'description_url' is missing"))
 		return
 	}
-	hrefUrl := keys[0]
+	descriptionUrl := dkeys[0]
 
-	// Error out if its not a valid URL
-	//u, err := url.ParseRequestURI(hrefUrl)
-	//if err != nil {
-	//	panic(err)
-	//}
+	// also require referrer to set CORS
+	fkeys, fok := r.URL.Query()["referrer"]
+	if fok || len(fkeys[0]) < 1 {
+		u, _ := url.Parse(fkeys[0])
+		w.Header().Set("Access-Control-Allow-Origin", u.Host)
+	}
 
-
-	fmt.Printf("%s", href);
 	var test vmap.VMAP = vmap.VMAP{
 		Version:    "1",
 		AdBreaks:   []vmap.AdBreak{
@@ -63,7 +60,7 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI:         &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/live/ads?iu=/21778456762/Instream&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=" + hrefUrl,
+						URI:          "https://pubads.g.doubleclick.net/gampad/live/ads?iu=/21778456762/Instream&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=" + descriptionUrl,
 					},
 					CustomAdData:     nil,
 				},
@@ -86,7 +83,7 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI:         &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/live/ads?iu=/21778456762/Instream&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url="+ hrefUrl,
+						URI:          "https://pubads.g.doubleclick.net/gampad/live/ads?iu=/21778456762/Instream&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url="+ descriptionUrl,
 					},
 					CustomAdData:     nil,
 				},
