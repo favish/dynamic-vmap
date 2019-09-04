@@ -21,6 +21,6 @@ jobs:
             tag=$(semantics --output-tag)
             if [ "$tag" ]; then
               ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace $tag dist/
-            else 
+            else
               echo "The commit message(s) did not indicate a major/minor/patch version."
             fi
