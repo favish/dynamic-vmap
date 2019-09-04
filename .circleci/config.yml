@@ -12,8 +12,8 @@ jobs:
       - run:
           name: run build
           command: |
-            dep ensure && mkdir dist && cd dist
-            go build -v ../
+            dep ensure
+            go install github.com/favish/dynamic-vmap
       - add_ssh_keys:
           fingerprints:
             - "3f:26:f2:4d:90:4c:ba:8c:9e:f7:d1:c7:29:56:89:d9"
@@ -22,7 +22,7 @@ jobs:
           command: |
             tag=$(semantics --output-tag)
             if [ "$tag" ]; then
-              ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace $tag dist/
+              ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace $tag /go/bin/dynamic-vmap
             else
               echo "The commit message(s) did not indicate a major/minor/patch version."
             fi
