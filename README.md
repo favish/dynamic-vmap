@@ -3,6 +3,9 @@ This is a very simple proof of concept but should scale without too much trouble
 
 You may want to use the released build artifact (binary) of this project in the creation of a new project that specifies these things as it is poutside the scope of this generally useful too that we can make publicly available.   
 
+## Use
+* Consumes `description_url` and `referrer` as query parameters to dynamically create VMAP and also set CORS host.
+
 ## TODO
 * Use environment vars to specify the VAST tags instead of hard code to allow us to use in mulitple places
 * Break monofunction into something more comprehensible
