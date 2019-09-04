@@ -6,5 +6,5 @@ You may want to use the released build artifact (binary) of this project in the 
 ## TODO
 * Use environment vars to specify the VAST tags instead of hard code to allow us to use in mulitple places
 * Break monofunction into something more comprehensible
-* Add optional "duration" query parameter for the video length to automatically space out ads.
+* Add optional "duration" query parameter for the video length to automatically space out ads.  
 * Eventually create a map of minimum video lengths before new ad formats take effect (e.g. all video longer than 0 seconds get only preroll, all videos longer than 60 second get preroll and post roll, all longer than 180 get...)
