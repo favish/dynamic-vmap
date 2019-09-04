@@ -10,7 +10,7 @@ import (
 
 func main() {
 	http.HandleFunc("/", HelloServer)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":80", nil)
 }
 
 var (
@@ -19,7 +19,8 @@ var (
 )
 
 func HelloServer(w http.ResponseWriter, r *http.Request) {
-    // Tell the browsers what to do with it
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	// Tell the browsers what to do with it
     //TODO: Consider reasonable cache tags, to reduce number of requests from clients
 
 	href := r.URL.Query()["href"];
