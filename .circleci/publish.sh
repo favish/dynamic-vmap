@@ -1,6 +1,5 @@
 #!/bin/sh
 set -e
-set -o pipefail
 
 WORKING_DIRECTORY="$PWD"
 
