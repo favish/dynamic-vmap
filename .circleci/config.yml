@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: alpine
+      - image: debian:stretch
     steps:
       - checkout
       - setup_remote_docker
