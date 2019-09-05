@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: "1.0"
 description: Stand alone service to return VMAPs dynamically generated based on query parameters for video advertising.
 name: dynamic-vmap
-version: 0.0.0
+version: 0.0.1
