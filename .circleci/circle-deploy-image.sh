@@ -19,8 +19,8 @@ FULL_VERSION="10.0.0"
 # Inject the version dynamically into the dockerfile based on the git TAG
 # The empty echo adds a newline. Don't ask... -mjf
 echo "Adding LABEL version=\"$FULL_VERSION\" to Dockerfile"
-echo "" >> ../.docker/Dockerfile
-echo "LABEL version=\"$FULL_VERSION\"" >> ../.docker/Dockerfile
+echo "" >> project/.docker/Dockerfile
+echo "LABEL version=\"$FULL_VERSION\"" >> project/.docker/Dockerfile
 
 echo "Logging in to dockerhub as $DOCKERHUB_USER"
 docker login -u$DOCKERHUB_USER -p$DOCKERHUB_PASS
