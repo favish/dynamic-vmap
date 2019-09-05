@@ -1,12 +1,19 @@
 FROM golang as builder
 
-WORKDIR /workspace
+# Create the necessary go directory for our source and copy it there
+WORKDIR /go/src/github.com/favish/dynamic-vmap
+COPY . .
 
-RUN go get gopkg.in/favish/dynamic-vmap.v
-//RUN dep ensure --add github.com/favish/dynamic-vmap
+# Install dep and the deps our project needs
+RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+RUN dep ensure
+
+# Build the binary including OS symbols
+WORKDIR /
 RUN CGO_ENABLED=0 GOOS=linux go build -a github.com/favish/dynamic-vmap
 
+# Copy the result over to a scrtach image for smallest image size possible
 FROM scratch
-COPY --from=builder /workspace/dynamic-vmap /dynamic-vmap
+COPY --from=builder /dynamic-vmap /dynamic-vmap
 
 ENTRYPOINT ["/dynamic-vmap"]
