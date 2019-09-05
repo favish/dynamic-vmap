@@ -20,16 +20,11 @@ WORKING_DIRECTORY="$PWD"
   exit 1
 }
 [ -z "$HELM_VERSION" ] && HELM_VERSION=2.8.1
-[ "$CIRCLE_BRANCH" ] || {
-  echo "ERROR: Environment variable CIRCLE_BRANCH is required"
-  exit 1
-}
 
 echo "GITHUB_PAGES_REPO=$GITHUB_PAGES_REPO"
 echo "GITHUB_PAGES_BRANCH=$GITHUB_PAGES_BRANCH"
 echo "HELM_CHARTS_SOURCE=$HELM_CHARTS_SOURCE"
 echo "HELM_VERSION=$HELM_VERSION"
-echo "CIRCLE_BRANCH=$CIRCLE_BRANCH"
 
 echo '>> Prepare...'
 mkdir -p /tmp/helm/bin
@@ -63,11 +58,6 @@ find "$HELM_CHARTS_SOURCE" -mindepth 1 -maxdepth 1 -type d | while read chart; d
 done
 echo '>>> helm repo index'
 helm repo index .
-
-if [ "$CIRCLE_BRANCH" != "master" ]; then
-  echo "Current branch is not master and do not publish"
-  exit 0
-fi
 
 echo ">> Publishing to $GITHUB_PAGES_BRANCH branch of $GITHUB_PAGES_REPO"
 git config user.email "$CIRCLE_USERNAME@users.noreply.github.com"
