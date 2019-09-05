@@ -8,7 +8,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build the image and push it
-          command: project/.circleci/circle-deploy-image.sh
+          command: .circleci/circle-deploy-image.sh
 #      - checkout
 #      - run: go get -u github.com/golang/dep/cmd/dep
 #      - run: go get -u github.com/tcnksm/ghr
