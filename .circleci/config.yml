@@ -4,6 +4,7 @@ jobs:
     docker:
       - image: alpine
     steps:
+      - add_ssh_keys
       - checkout
       - run:
           name: helm-github-pages
