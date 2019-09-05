@@ -43,7 +43,7 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var test vmap.VMAP = vmap.VMAP{
-		Version:    "1",
+		Version:    "1.0",
 		AdBreaks:   []vmap.AdBreak{
 			{
 				TimeOffset:     vmap.Offset{
