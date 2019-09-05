@@ -3,11 +3,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:55ff307968b2bb6e7b32ae76c94013343aa579993b3dae628a577147dbd354c9"
+  digest = "1:d9fbd6d1ea12bb2624ab00279785d71a64d09e7b40af6464abb8088cbe98a5d7"
   name = "github.com/favish/vmap"
   packages = ["."]
   pruneopts = "UT"
-  revision = "4d501f1f9b304f36ea85293e80978373334b68dc"
+  revision = "46c3c2b90acdbc297b0809d2e828d77016f9ca24"
 
 [[projects]]
   branch = "master"
