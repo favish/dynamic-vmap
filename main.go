@@ -6,12 +6,20 @@ import (
 	"github.com/favish/vmap"
 	"log"
 	"net/http"
-	//"net/url"
+	"os"
 )
 
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
+
 func main() {
+	port := getEnv("VMAP_PORT", "80")
 	http.HandleFunc("/", HelloServer)
-	http.ListenAndServe(":80", nil)
+	http.ListenAndServe(":" + port, nil)
 }
 
 var (
@@ -44,6 +52,7 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 
 	var test vmap.VMAP = vmap.VMAP{
 		Version:    "1.0",
+		XmlNS:    "http://www.iab.net/videosuite/vmap",
 		AdBreaks:   []vmap.AdBreak{
 			{
 				TimeOffset:     vmap.Offset{
