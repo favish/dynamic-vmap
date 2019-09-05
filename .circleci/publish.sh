@@ -4,6 +4,11 @@ set -o pipefail
 
 WORKING_DIRECTORY="$PWD"
 
+[ "$CIRCLE_TAG" ] || {
+  echo "Skip Helm Packaging until we have a tagged release: Environment variable CIRCLE_TAG is required"
+  exit
+}
+
 [ "$GITHUB_PAGES_REPO" ] || {
   echo "ERROR: Environment variable GITHUB_PAGES_REPO is required"
   exit 1
@@ -54,7 +59,7 @@ find "$HELM_CHARTS_SOURCE" -mindepth 1 -maxdepth 1 -type d | while read chart; d
   chart_name="`basename "$chart"`"
   echo ">>> helm package -d $chart_name $chart"
   mkdir -p "$chart_name"
-  helm package -d "$chart_name" "$chart"
+  helm package -d "$chart_name" --version "$CIRCLE_TAG" "$chart"
 done
 echo '>>> helm repo index'
 helm repo index .
