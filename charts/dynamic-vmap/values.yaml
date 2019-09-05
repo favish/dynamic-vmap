@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: favish/dynamic-vmap
-  tag: 1.0.0
+  tag: version-1.0.4
   pullPolicy: IfNotPresent
 
 service:
@@ -14,17 +14,17 @@ service:
   port: 80
 
 ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    certmanager.k8s.io/cluster-issuer: "letsencrypt-prod"
-  path: /
-  hosts:
-    - rv-vmap.dev.favish.com
-  tls:
-    - secretName: vmap-tls
-      hosts:
-        - rv-vmap.dev.favish.com
+  enabled: false
+#  annotations:
+#    kubernetes.io/ingress.class: nginx
+#    certmanager.k8s.io/cluster-issuer: "letsencrypt-prod"
+#  path: /
+#  hosts:
+#    - example.com
+#  tls:
+#    - secretName: tls
+#      hosts:
+#        - example.com
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
