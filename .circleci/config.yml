@@ -1,4 +1,12 @@
 version: 2
+workflows:
+  version: 2
+  tagged-build:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /^v.*/
 jobs:
   build:
     docker:
