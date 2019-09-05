@@ -3,7 +3,17 @@ entries:
   dynamic-vmap:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-09-05T19:30:32.717344471Z
+    created: 2019-09-05T19:59:53.541173962Z
+    description: Stand alone service to return VMAPs dynamically generated based on
+      query parameters for video advertising.
+    digest: 79b4324d4933deda7772297bc4a44b7755fa60a76be2cd9695c0dabb024be7ad
+    name: dynamic-vmap
+    urls:
+    - dynamic-vmap/dynamic-vmap-v1.0.4.tgz
+    version: v1.0.4
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2019-09-05T19:59:53.540934334Z
     description: Stand alone service to return VMAPs dynamically generated based on
       query parameters for video advertising.
     digest: 9934c663e4c8d2c6129b62a06bdcb171eba2f19b82b8c135cc3b3a572b84e5ac
@@ -11,4 +21,4 @@ entries:
     urls:
     - dynamic-vmap/dynamic-vmap-0.1.0.tgz
     version: 0.1.0
-generated: 2019-09-05T19:30:32.716981041Z
+generated: 2019-09-05T19:59:53.540568321Z
