@@ -3,7 +3,6 @@ jobs:
   build:
     docker:
       - image: alpine
-    working_directory: /go/src/github.com/favish/dynamic-vmap
     steps:
       - checkout
       - setup_remote_docker
