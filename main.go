@@ -70,7 +70,7 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI:         &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/live/ads?iu=/21778456762/Instream&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=" + descriptionUrl,
+						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/real_vision/preroll&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=" + descriptionUrl,
 					},
 					CustomAdData:     nil,
 				},
@@ -93,7 +93,7 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI:         &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/live/ads?iu=/21778456762/Instream&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url="+ descriptionUrl,
+						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/real_vision/postroll&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url="+ descriptionUrl,
 					},
 					CustomAdData:     nil,
 				},
