@@ -15,6 +15,9 @@ jobs:
       - add_ssh_keys
       - checkout
       - run:
+          name: add git
+          command: apk add git
+      - run:
           name: helm-github-pages
           command: cat .circleci/publish.sh | sh
           environment:
