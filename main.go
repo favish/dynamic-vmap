@@ -4,10 +4,12 @@ import (
 	"encoding/xml"
 	"fmt"
 	"github.com/favish/vmap"
+	"github.com/rs/vast"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 )
 
 func getEnv(key, fallback string) string {
@@ -62,11 +64,11 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 	numberOfPods := duration/adGapSeconds
 	var adBreaks []vmap.AdBreak
 
-	fmt.Println(w, "Number of pods: %s", numberOfPods)
-
 	if numberOfPods > 0 {
 		for i := 1; i <= numberOfPods; i++ {
-			adBreaks = append(adBreaks, adBreakGenerator(i * adGapSeconds, descriptionUrl, "midroll", "15", "90", "3"))
+			sec := fmt.Sprintf("%vs", i * adGapSeconds)
+			var ter, _ = time.ParseDuration(sec)
+			adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", "15", "90", "3"))
 		}
 	}
 
@@ -129,31 +131,31 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s", xmlt)
 }
 
-func adBreakGenerator(offset int, descriptionUrl string, breakId string, minSec string, maxSec string, maxPods string) vmap.AdBreak {
-	return vmap.AdBreak {
-		TimeOffset:     vmap.Offset{
-			Duration: nil,
-			Position: offset,
+func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId string, minSec string, maxSec string, maxPods string) vmap.AdBreak {
+	return vmap.AdBreak{
+		TimeOffset: vmap.Offset{
+			Duration: &offset,
+			Position: 0,
 			Percent:  0,
 		},
-		BreakType:      "linear",
-		BreakID:        breakId,
-		RepeatAfter:    0,
-		AdSource:       &vmap.AdSource{
-			ID:                "midroll-ad",
+		BreakType:   "linear",
+		BreakID:     breakId,
+		RepeatAfter: 0,
+		AdSource: &vmap.AdSource{
+			ID:               "midroll-ad",
 			AllowMultipleAds: &t,
 			FollowRedirects:  &t,
 			VASTAdData:       nil,
-			AdTagURI:         &vmap.AdTagURI{
+			AdTagURI: &vmap.AdTagURI{
 				TemplateType: "vast3",
-				URI:          fmt.Sprintf("https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/real_vision/midroll&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=%s&pmnd=%s&pmxd=%s&pmad=%s",
+				URI: fmt.Sprintf("https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/real_vision/midroll&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=%s&pmnd=%v&pmxd=%v&pmad=%v",
 					descriptionUrl,
 					minSec,
 					maxSec,
 					maxPods,
 				),
 			},
-			CustomAdData:     nil,
+			CustomAdData: nil,
 		},
 		TrackingEvents: nil,
 		Extensions:     nil,
