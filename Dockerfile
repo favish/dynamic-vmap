@@ -12,7 +12,7 @@ RUN dep ensure
 WORKDIR /
 RUN CGO_ENABLED=0 GOOS=linux go build -a github.com/favish/dynamic-vmap
 
-# Copy the result over to a scrtach image for smallest image size possible
+# Copy the result over to a scratch image for smallest image size possible
 FROM scratch
 COPY --from=builder /dynamic-vmap /dynamic-vmap
 
