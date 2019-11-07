@@ -1,0 +1,4 @@
+github.com/favish/vmap v0.0.0-20190905152700-46c3c2b90acd h1:Vs97p2ko55ez4WYU130lBJCxHMcXFpz3jFY+dT1N5I4=
+github.com/favish/vmap v0.0.0-20190905152700-46c3c2b90acd/go.mod h1:OjtG+ZyKVlYmaiYez4LUsuqr37g43m2UESDQtfYV6g4=
+github.com/rs/vast v0.0.0-20180618195556-06597a11a4c3 h1:PSgAIBGyQP7KW2+EElPsa3qmaya7kCxLSI/GBR176MQ=
+github.com/rs/vast v0.0.0-20180618195556-06597a11a4c3/go.mod h1:gq4gkWd7KdigGXkRdN5GEgBQYAWDTmD4/U65MdCgLxQ=
