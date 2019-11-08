@@ -59,7 +59,7 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("500 - Url Param 'duration' is missing"))
 		return
 	}
-    adGapSeconds := 15
+    adGapSeconds := 480
 	duration, _ := strconv.Atoi(durkeys[0])
 	numberOfPods := duration/adGapSeconds
 	var adBreaks []vmap.AdBreak
@@ -68,7 +68,7 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 		for i := 1; i <= numberOfPods; i++ {
 			sec := fmt.Sprintf("%vs", i * adGapSeconds)
 			var ter, _ = time.ParseDuration(sec)
-			adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", "15", "90", "3"))
+			adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 15, 90, "3"))
 		}
 	}
 
@@ -92,7 +92,7 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI:         &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/real_vision/preroll&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=" + descriptionUrl,
+						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/real_vision/preroll&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&min_ad_duration=5000&max_ad_duration=60000&description_url=" + descriptionUrl,
 					},
 					CustomAdData:     nil,
 				},
@@ -115,7 +115,7 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI:         &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/real_vision/postroll&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url="+ descriptionUrl,
+						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/real_vision/postroll&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&min_ad_duration=5000&max_ad_duration=60000&description_url="+ descriptionUrl,
 					},
 					CustomAdData:     nil,
 				},
@@ -131,7 +131,10 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s", xmlt)
 }
 
-func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId string, minSec string, maxSec string, maxPods string) vmap.AdBreak {
+func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId string, minSec int, maxSec int, maxPods string) vmap.AdBreak {
+	minSeconds := minSec * 1000
+	maxSeconds := maxSec * 1000
+
 	return vmap.AdBreak{
 		TimeOffset: vmap.Offset{
 			Duration: &offset,
@@ -150,8 +153,8 @@ func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId strin
 				TemplateType: "vast3",
 				URI: fmt.Sprintf("https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/real_vision/midroll&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=%s&pmnd=%v&pmxd=%v&pmad=%v",
 					descriptionUrl,
-					minSec,
-					maxSec,
+					minSeconds,
+					maxSeconds,
 					maxPods,
 				),
 			},
@@ -161,4 +164,3 @@ func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId strin
 		Extensions:     nil,
 	}
 }
-
