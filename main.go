@@ -45,12 +45,9 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 	}
 	descriptionUrl := dkeys[0]
 
-	// Require referrer to set CORS.
-	fkeys, _ := r.URL.Query()["referrer"]
-	if len(fkeys) > 0  {
-		w.Header().Set("Access-Control-Allow-Origin", fkeys[0])
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
-	}
+	// Referrer to set CORS, explicitly to Google API.
+	w.Header().Set("Access-Control-Allow-Origin", "https://imasdk.googleapis.com")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 	// Require video duration in order to determine VMAP structure.
 	durkeys, dok := r.URL.Query()["duration"]
