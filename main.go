@@ -49,15 +49,25 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "https://imasdk.googleapis.com")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 
-	// Require video duration in order to determine VMAP structure.
+	// Require video duration in order to determine VMAP structure. If this is NaN it means the server does not know the duration and we fallback to a preset VMAP.
 	durkeys, dok := r.URL.Query()["duration"]
 	if !dok || len(durkeys[0]) < 1 {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("500 - Url Param 'duration' is missing"))
 		return
 	}
+
     adGapSeconds := 480
-	duration, _ := strconv.Atoi(durkeys[0])
+	durationParameter := durkeys[0]
+	duration := 0
+
+	// NaN means the video server does not have access to the duration. Assume a 60 minute video so we can cover most use cases.
+	if(durationParameter == "NaN") {
+		duration = 3600
+	} else {
+		duration, _ = strconv.Atoi(durkeys[0])
+	}
+
 	numberOfPods := duration/adGapSeconds
 	var adBreaks []vmap.AdBreak
 
@@ -69,6 +79,7 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// This sets the pre and post roll which are always the same.
 	var mainVmap vmap.VMAP = vmap.VMAP{
 		Version:    "1.0",
 		XmlNS:    "http://www.iab.net/videosuite/vmap",
@@ -128,6 +139,7 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s", xmlt)
 }
 
+// This generates optimized ad pods based on the duration of the video.
 func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId string, minSec int, maxSec int, maxPods string) vmap.AdBreak {
 	minSeconds := minSec * 1000
 	maxSeconds := maxSec * 1000
