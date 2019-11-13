@@ -57,22 +57,22 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-    adGapSeconds := 480
+    adGapSeconds := 480.0
 	durationParameter := durkeys[0]
-	duration := 0
+	duration := 0.0
 
 	// NaN means the video server does not have access to the duration. Assume a 60 minute video so we can cover most use cases.
 	if(durationParameter == "NaN") {
 		duration = 3600
 	} else {
-		duration, _ = strconv.Atoi(durkeys[0])
+		duration, _ =  strconv.ParseFloat(durationParameter, 32)
 	}
 
 	numberOfPods := duration/adGapSeconds
 	var adBreaks []vmap.AdBreak
 
 	if numberOfPods > 0 {
-		for i := 1; i <= numberOfPods; i++ {
+		for i := 1.0; i <= numberOfPods; i++ {
 			sec := fmt.Sprintf("%vs", i * adGapSeconds)
 			var ter, _ = time.ParseDuration(sec)
 			adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 15, 90, "3"))
