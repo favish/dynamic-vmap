@@ -75,7 +75,17 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 		for i := 1.0; i <= numberOfPods; i++ {
 			sec := fmt.Sprintf("%vs", i * adGapSeconds)
 			var ter, _ = time.ParseDuration(sec)
-			adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 15, 90, "3"))
+
+			// Put in an ad pod at the 3 minute mark for shorter videos.
+			if i == 1.0 {
+				sec := fmt.Sprintf("%vs", i * 180)
+				ter, _ = time.ParseDuration(sec)
+			} else {
+				sec := fmt.Sprintf("%vs", i * adGapSeconds)
+				ter, _ = time.ParseDuration(sec)
+			}
+
+			adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 15, 30, "2"))
 		}
 	}
 
