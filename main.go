@@ -84,29 +84,29 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 		Version:    "1.0",
 		XmlNS:    "http://www.iab.net/videosuite/vmap",
 		AdBreaks: []vmap.AdBreak{
-			{
-				TimeOffset: vmap.Offset{
-					Duration: nil,
-					Position: vmap.OffsetStart,
-					Percent:  0,
-				},
-				BreakType:   "linear",
-				BreakID:     "preroll",
-				RepeatAfter: 0,
-				AdSource: &vmap.AdSource{
-					ID:               "preroll-ad-1",
-					AllowMultipleAds: &f,
-					FollowRedirects:  &t,
-					VASTAdData:       nil,
-					AdTagURI: &vmap.AdTagURI{
-						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/real_vision/preroll&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=" + descriptionUrl,
-					},
-					CustomAdData: nil,
-				},
-				TrackingEvents: nil,
-				Extensions:     nil,
-			},
+			//{
+			//	TimeOffset: vmap.Offset{
+			//		Duration: nil,
+			//		Position: vmap.OffsetStart,
+			//		Percent:  0,
+			//	},
+			//	BreakType:   "linear",
+			//	BreakID:     "preroll",
+			//	RepeatAfter: 0,
+			//	AdSource: &vmap.AdSource{
+			//		ID:               "preroll-ad-1",
+			//		AllowMultipleAds: &f,
+			//		FollowRedirects:  &t,
+			//		VASTAdData:       nil,
+			//		AdTagURI: &vmap.AdTagURI{
+			//			TemplateType: "vast3",
+			//			URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/real_vision/preroll&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=15000&description_url=" + descriptionUrl,
+			//		},
+			//		CustomAdData: nil,
+			//	},
+			//	TrackingEvents: nil,
+			//	Extensions:     nil,
+			//},
 			{
 				TimeOffset: vmap.Offset{
 					Duration: nil,
