@@ -10,6 +10,7 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"strings"
 )
 
 func getEnv(key, fallback string) string {
@@ -21,7 +22,7 @@ func getEnv(key, fallback string) string {
 
 func main() {
 	port := getEnv("VMAP_PORT", "80")
-	http.HandleFunc("/", HelloServer)
+	http.HandleFunc("/", createVmap)
 	http.ListenAndServe(":" + port, nil)
 }
 
@@ -30,12 +31,10 @@ var (
 	t bool = true
 )
 
-func HelloServer(w http.ResponseWriter, r *http.Request) {
-
-	// Tell the browsers what to do with it
+func createVmap(w http.ResponseWriter, r *http.Request) {
     //TODO: Consider reasonable cache tags, to reduce number of requests from clients
 
-	// Get the required description query param or tell them all is lost.
+	// Get the required description query param or error.
 	dkeys, dok := r.URL.Query()["description_url"]
 	if !dok || len(dkeys[0]) < 1 {
 		log.Println("")
@@ -44,6 +43,19 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	descriptionUrl := dkeys[0]
+
+	// Get the required referrer query param or error.
+	rkeys, rok := r.URL.Query()["referrer"]
+	if !rok || len(rkeys[0]) < 1 {
+		log.Println("")
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("500 - Url Param 'referrer' is missing"))
+		return
+	}
+	referrer := dkeys[0]
+
+	// Grab the partner units based on the referrer passed in. We use different ad units to tell where the traffic is coming from.
+	partnerUnitCodes := getPartnerUnit(referrer)
 
 	// Referrer to set CORS, explicitly to Google API.
 	w.Header().Set("Access-Control-Allow-Origin", "https://imasdk.googleapis.com")
@@ -85,11 +97,11 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 				ter, _ = time.ParseDuration(sec)
 			}
 
-			adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 15, 30, "2"))
+			adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 15, 30, "2", partnerUnitCodes))
 		}
 	}
 
-	// This sets the pre and post roll which are always the same.
+	// This sets the pre and post roll. Currently preroll is disabled due to a weird issue involving the player and IMA.
 	var mainVmap vmap.VMAP = vmap.VMAP{
 		Version:    "1.0",
 		XmlNS:    "http://www.iab.net/videosuite/vmap",
@@ -133,7 +145,7 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI: &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/real_vision/postroll&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=" + descriptionUrl,
+						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[1] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=" + descriptionUrl,
 					},
 					CustomAdData: nil,
 				},
@@ -149,8 +161,21 @@ func HelloServer(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s", xmlt)
 }
 
+func getPartnerUnit(referrer string) [2]string {
+	var unitCodes [2]string;
+	if(strings.Contains(referrer, "www.realvision.com")) {
+		unitCodes[0] = "real_vision/midroll";
+		unitCodes[1] = "real_vision/postroll";
+	} else if(strings.Contains(referrer, "www.zerohedge.com")) {
+		unitCodes[0] = "real_vision/rv_zerohedge_midroll";
+		unitCodes[1] = "real_vision/rv_zerohedge_postroll";
+	}
+
+	return unitCodes;
+}
+
 // This generates optimized ad pods based on the duration of the video.
-func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId string, minSec int, maxSec int, maxPods string) vmap.AdBreak {
+func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId string, minSec int, maxSec int, maxPods string, adUnits[2]string) vmap.AdBreak {
 	minSeconds := minSec * 1000
 	maxSeconds := maxSec * 1000
 
@@ -170,7 +195,7 @@ func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId strin
 			VASTAdData:       nil,
 			AdTagURI: &vmap.AdTagURI{
 				TemplateType: "vast3",
-				URI: fmt.Sprintf("https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/real_vision/midroll&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=%s&pmnd=%v&pmxd=%v&pmad=%v",
+				URI: fmt.Sprintf("https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + adUnits[0] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=%s&pmnd=%v&pmxd=%v&pmad=%v",
 					descriptionUrl,
 					minSeconds,
 					maxSeconds,
