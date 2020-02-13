@@ -52,7 +52,7 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("500 - Url Param 'referrer' is missing"))
 		return
 	}
-	referrer := dkeys[0]
+	referrer := rkeys[0]
 
 	// Grab the partner units based on the referrer passed in. We use different ad units to tell where the traffic is coming from.
 	partnerUnitCodes := getPartnerUnit(referrer)
