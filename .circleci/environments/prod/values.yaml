@@ -1,0 +1,11 @@
+image:
+  tag: version-1.1.10
+
+ingress:
+  enabled: true
+  hosts:
+    - rv-vmap.dev.favish.com
+  tls:
+    - secretName: vmap-tls
+      hosts:
+        - rv-vmap.dev.favish.com
