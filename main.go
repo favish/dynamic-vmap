@@ -163,12 +163,15 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 
 func getPartnerUnit(referrer string) [2]string {
 	var unitCodes [2]string;
-	if(strings.Contains(referrer, "www.realvision.com")) {
+	if strings.Contains(referrer, "www.realvision.com") {
 		unitCodes[0] = "real_vision/midroll";
 		unitCodes[1] = "real_vision/postroll";
-	} else if(strings.Contains(referrer, "www.zerohedge.com")) {
+	} else if strings.Contains(referrer, "www.zerohedge.com") {
 		unitCodes[0] = "real_vision/rv_zerohedge_midroll";
 		unitCodes[1] = "real_vision/rv_zerohedge_postroll";
+	} else {
+		unitCodes[0] = "real_vision/midroll";
+		unitCodes[1] = "real_vision/postroll";
 	}
 
 	return unitCodes;
