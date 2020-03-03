@@ -122,7 +122,7 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI: &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/" + partnerUnitCodes[1] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=15000&description_url=" + descriptionUrl,
+						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/" + partnerUnitCodes[0] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=15000&description_url=" + descriptionUrl,
 					},
 					CustomAdData: nil,
 				},
@@ -145,7 +145,7 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI: &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[1] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=" + descriptionUrl,
+						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[2] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=" + descriptionUrl,
 					},
 					CustomAdData: nil,
 				},
@@ -161,24 +161,27 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s", xmlt)
 }
 
-func getPartnerUnit(referrer string) [2]string {
-	var unitCodes [2]string;
+func getPartnerUnit(referrer string) [3]string {
+	var unitCodes [3]string;
 	if strings.Contains(referrer, "www.realvision.com") {
-		unitCodes[0] = "real_vision/midroll";
-		unitCodes[1] = "real_vision/postroll";
+		unitCodes[0] = "real_vision/preroll";
+		unitCodes[1] = "real_vision/midroll";
+		unitCodes[2] = "real_vision/postroll";
 	} else if strings.Contains(referrer, "www.zerohedge.com") {
-		unitCodes[0] = "real_vision/rv_zerohedge_midroll";
-		unitCodes[1] = "real_vision/rv_zerohedge_postroll";
+		unitCodes[0] = "real_vision/rv_zerohedge_preroll";
+		unitCodes[1] = "real_vision/rv_zerohedge_midroll";
+		unitCodes[2] = "real_vision/rv_zerohedge_postroll";
 	} else {
-		unitCodes[0] = "real_vision/midroll";
-		unitCodes[1] = "real_vision/postroll";
+		unitCodes[0] = "real_vision/preroll";
+		unitCodes[1] = "real_vision/midroll";
+		unitCodes[2] = "real_vision/postroll";
 	}
 
 	return unitCodes;
 }
 
 // This generates optimized ad pods based on the duration of the video.
-func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId string, minSec int, maxSec int, maxPods string, adUnits[2]string) vmap.AdBreak {
+func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId string, minSec int, maxSec int, maxPods string, adUnits[3]string) vmap.AdBreak {
 	minSeconds := minSec * 1000
 	maxSeconds := maxSec * 1000
 
@@ -198,7 +201,7 @@ func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId strin
 			VASTAdData:       nil,
 			AdTagURI: &vmap.AdTagURI{
 				TemplateType: "vast3",
-				URI: fmt.Sprintf("https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + adUnits[0] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=%s&pmnd=%v&pmxd=%v&pmad=%v",
+				URI: fmt.Sprintf("https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + adUnits[1] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=%s&pmnd=%v&pmxd=%v&pmad=%v",
 					descriptionUrl,
 					minSeconds,
 					maxSeconds,
