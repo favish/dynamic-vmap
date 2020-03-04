@@ -69,7 +69,7 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-    adGapSeconds := 480.0
+    adGapSeconds := 480.0 // An ad pod every 8 minutes.
 	durationParameter := durkeys[0]
 	duration := 0.0
 
@@ -80,25 +80,23 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 		duration, _ =  strconv.ParseFloat(durationParameter, 32)
 	}
 
+	var noAdBeyondPoint = duration - adGapSeconds;
 	numberOfPods := duration/adGapSeconds
 	var adBreaks []vmap.AdBreak
 
-	if numberOfPods > 0 {
+	if numberOfPods > 1  {
 		for i := 1.0; i <= numberOfPods; i++ {
 			sec := fmt.Sprintf("%vs", i * adGapSeconds)
 			var ter, _ = time.ParseDuration(sec)
 
-			// Put in an ad pod at the 3 minute mark for shorter videos.
-			if i == 1.0 {
-				sec := fmt.Sprintf("%vs", i * 180)
-				ter, _ = time.ParseDuration(sec)
-			} else {
-				sec := fmt.Sprintf("%vs", i * adGapSeconds)
-				ter, _ = time.ParseDuration(sec)
+			if (i * adGapSeconds) <= noAdBeyondPoint {
+				adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 15, 30, "2", partnerUnitCodes))
 			}
-
-			adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 15, 30, "2", partnerUnitCodes))
 		}
+	} else if(duration > 300){
+		sec := fmt.Sprintf("%vs", 180)
+		var ter, _ = time.ParseDuration(sec)
+		adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 15, 30, "2", partnerUnitCodes))
 	}
 
 	// This sets the pre and post roll.
