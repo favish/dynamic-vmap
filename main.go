@@ -90,13 +90,13 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 			var ter, _ = time.ParseDuration(sec)
 
 			if (i * adGapSeconds) <= noAdBeyondPoint {
-				adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 15, 30, "2", partnerUnitCodes))
+				adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 0, 30, "3", partnerUnitCodes))
 			}
 		}
 	} else if(duration > 300){
 		sec := fmt.Sprintf("%vs", 180)
 		var ter, _ = time.ParseDuration(sec)
-		adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 15, 30, "2", partnerUnitCodes))
+		adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 0, 30, "3", partnerUnitCodes))
 	}
 
 	// This sets the pre and post roll.
