@@ -34,6 +34,10 @@ var (
 func createVmap(w http.ResponseWriter, r *http.Request) {
     //TODO: Consider reasonable cache tags, to reduce number of requests from clients
 
+	// Referrer to set CORS, explicitly to Google API.
+	w.Header().Set("Access-Control-Allow-Origin", "https://imasdk.googleapis.com")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+
 	// Get the required description query param or error.
 	dkeys, dok := r.URL.Query()["description_url"]
 	if !dok || len(dkeys[0]) < 1 {
@@ -44,22 +48,16 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 	}
 	descriptionUrl := dkeys[0]
 
-	// Get the required referrer query param or error.
+	// Get the required referrer if present. It will not always be set.
 	rkeys, rok := r.URL.Query()["referrer"]
-	if !rok || len(rkeys[0]) < 1 {
-		log.Println("")
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("500 - Url Param 'referrer' is missing"))
-		return
-	}
 	referrer := rkeys[0]
 
 	// Grab the partner units based on the referrer passed in. We use different ad units to tell where the traffic is coming from.
-	partnerUnitCodes := getPartnerUnit(referrer)
-
-	// Referrer to set CORS, explicitly to Google API.
-	w.Header().Set("Access-Control-Allow-Origin", "https://imasdk.googleapis.com")
-	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	if(referrer) {
+	    partnerUnitCodes := getPartnerUnit(referrer)
+	} else {
+	    partnerUnitCodes := getPartnerUnit(descriptionUrl)
+	}
 
 	// Require video duration in order to determine VMAP structure. If this is NaN it means the server does not know the duration and we fallback to a preset VMAP.
 	durkeys, dok := r.URL.Query()["duration"]
