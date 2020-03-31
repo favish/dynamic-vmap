@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"time"
 	"strings"
+	"net/url"
 )
 
 func getEnv(key, fallback string) string {
@@ -46,7 +47,7 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("500 - Url Param 'description_url' is missing"))
 		return
 	}
-	descriptionUrl := dkeys[0]
+	descriptionUrl := url.QueryEscape(dkeys[0])
 
 	// Get the required referrer if present. It will not always be set.
 	rkeys, _ := r.URL.Query()["referrer"]
@@ -84,13 +85,13 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 			var ter, _ = time.ParseDuration(sec)
 
 			if (i * adGapSeconds) <= noAdBeyondPoint {
-				adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 0, 30, "3", partnerUnitCodes))
+				adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 0, 30, "3", partnerUnitCodes, i, "midroll"))
 			}
 		}
 	} else if(duration > 300){
 		sec := fmt.Sprintf("%vs", 180)
 		var ter, _ = time.ParseDuration(sec)
-		adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 0, 30, "3", partnerUnitCodes))
+		adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 0, 30, "3", partnerUnitCodes, 1, "midroll"))
 	}
 
 	// This sets the pre and post roll.
@@ -114,7 +115,7 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI: &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[0] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=15000&description_url=" + descriptionUrl,
+						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[0] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=15000&description_url=" + descriptionUrl + "&vpos=preroll",
 					},
 					CustomAdData: nil,
 				},
@@ -137,7 +138,7 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI: &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[2] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=" + descriptionUrl,
+						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[2] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=" + descriptionUrl  + "&vpos=postroll",
 					},
 					CustomAdData: nil,
 				},
@@ -173,7 +174,7 @@ func getPartnerUnit(referrer string) [3]string {
 }
 
 // This generates optimized ad pods based on the duration of the video.
-func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId string, minSec int, maxSec int, maxPods string, adUnits[3]string) vmap.AdBreak {
+func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId string, minSec int, maxSec int, maxPods string, adUnits[3]string, pod float64, vpos string) vmap.AdBreak {
 	minSeconds := minSec * 1000
 	maxSeconds := maxSec * 1000
 
@@ -193,11 +194,13 @@ func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId strin
 			VASTAdData:       nil,
 			AdTagURI: &vmap.AdTagURI{
 				TemplateType: "vast3",
-				URI: fmt.Sprintf("https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + adUnits[1] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=%s&pmnd=%v&pmxd=%v&pmad=%v",
+				URI: fmt.Sprintf("https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + adUnits[1] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=%s&pmnd=%v&pmxd=%v&pmad=%v&pod=%v&vpos=%v",
 					descriptionUrl,
 					minSeconds,
 					maxSeconds,
 					maxPods,
+					pod,
+					vpos,
 				),
 			},
 			CustomAdData: nil,
