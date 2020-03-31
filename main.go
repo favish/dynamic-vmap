@@ -12,6 +12,7 @@ import (
 	"time"
 	"strings"
 	"net/url"
+	 "math/rand"
 )
 
 func getEnv(key, fallback string) string {
@@ -67,6 +68,8 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
     adGapSeconds := 480.0 // An ad pod every 8 minutes.
 	durationParameter := durkeys[0]
 	duration := 0.0
+    var correlator = rand.Intn(500000)
+    var correlatorString = strconv.Itoa(correlator);
 
 	// NaN means the video server does not have access to the duration. Assume a 60 minute video so we can cover most use cases.
 	if(durationParameter == "NaN") {
@@ -85,13 +88,13 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 			var ter, _ = time.ParseDuration(sec)
 
 			if (i * adGapSeconds) <= noAdBeyondPoint {
-				adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 0, 30, "3", partnerUnitCodes, i, "midroll"))
+				adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 0, 30, "3", partnerUnitCodes, i, "midroll", correlator))
 			}
 		}
 	} else if(duration > 300){
 		sec := fmt.Sprintf("%vs", 180)
 		var ter, _ = time.ParseDuration(sec)
-		adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 0, 30, "3", partnerUnitCodes, 1, "midroll"))
+		adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 0, 30, "3", partnerUnitCodes, 1, "midroll", correlator))
 	}
 
 	// This sets the pre and post roll.
@@ -138,7 +141,7 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI: &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[2] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=" + descriptionUrl  + "&vpos=postroll",
+						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[2] + "&env=vp&impl=s&correlator=" + correlatorString + "&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=" + descriptionUrl  + "&vpos=postroll",
 					},
 					CustomAdData: nil,
 				},
@@ -174,7 +177,7 @@ func getPartnerUnit(referrer string) [3]string {
 }
 
 // This generates optimized ad pods based on the duration of the video.
-func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId string, minSec int, maxSec int, maxPods string, adUnits[3]string, pod float64, vpos string) vmap.AdBreak {
+func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId string, minSec int, maxSec int, maxPods string, adUnits[3]string, pod float64, vpos string, correlator int) vmap.AdBreak {
 	minSeconds := minSec * 1000
 	maxSeconds := maxSec * 1000
 
@@ -194,7 +197,8 @@ func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId strin
 			VASTAdData:       nil,
 			AdTagURI: &vmap.AdTagURI{
 				TemplateType: "vast3",
-				URI: fmt.Sprintf("https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + adUnits[1] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=%s&pmnd=%v&pmxd=%v&pmad=%v&pod=%v&vpos=%v",
+				URI: fmt.Sprintf("https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + adUnits[1] + "&env=vp&impl=s&correlator=%v&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=%s&pmnd=%v&pmxd=%v&pmad=%v&pod=%v&vpos=%v",
+					correlator,
 					descriptionUrl,
 					minSeconds,
 					maxSeconds,
