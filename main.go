@@ -64,7 +64,7 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-    adGapSeconds := 480.0 // An ad pod every 8 minutes.
+    adGapSeconds := 600.0 // An ad pod every 8 minutes.
 	durationParameter := durkeys[0]
 	duration := 0.0
 
@@ -115,7 +115,7 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI: &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[0] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=15000&description_url=" + descriptionUrl + "&vpos=preroll&cust_params=testing%3Dtrue&vad_type=linear",
+						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[0] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=15000&description_url=" + descriptionUrl + "&vpos=preroll&cust_params=testing%3Dtrue&vad_type=linear&pp=real_vision",
 					},
 					CustomAdData: nil,
 				},
