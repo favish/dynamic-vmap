@@ -115,7 +115,7 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI: &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[0] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=15000&description_url=" + descriptionUrl + "&vpos=preroll&cust_params=testing%3Dtrue",
+						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[0] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=15000&description_url=" + descriptionUrl + "&vpos=preroll&cust_params=testing%Dtrue&vad_type=linear",
 					},
 					CustomAdData: nil,
 				},
@@ -138,7 +138,7 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI: &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[2] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=15000&description_url=" + descriptionUrl + "&vpos=postroll&cust_params=testing%3Dtrue",
+						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[2] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=15000&description_url=" + descriptionUrl + "&vpos=postroll&cust_params=testing%3Dtrue&vad_type=linear",
 					},
 					CustomAdData: nil,
 				},
@@ -194,7 +194,7 @@ func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId strin
 			VASTAdData:       nil,
 			AdTagURI: &vmap.AdTagURI{
 				TemplateType: "vast3",
-				URI: fmt.Sprintf("https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + adUnits[1] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&cust_params=testing%3Dtrue&sz=640x480&unviewed_position_start=1&description_url=%s&pmnd=%v&pmxd=%v&pmad=%v&pod=%v&vpos=%v",
+				URI: fmt.Sprintf("https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + adUnits[1] + "&vad_type=linear&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=%s&pmnd=%v&pmxd=%v&pmad=%v&pod=%v&vpos=%v",
 					descriptionUrl,
 					minSeconds,
 					maxSeconds,
