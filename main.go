@@ -12,6 +12,7 @@ import (
 	"time"
 	"strings"
 	"net/url"
+    "math/rand"
 )
 
 func getEnv(key, fallback string) string {
@@ -34,6 +35,7 @@ var (
 
 func createVmap(w http.ResponseWriter, r *http.Request) {
     //TODO: Consider reasonable cache tags, to reduce number of requests from clients
+    var scor = rand.Int();
 
 	// Referrer to set CORS, explicitly to Google API.
 	w.Header().Set("Access-Control-Allow-Origin", "https://imasdk.googleapis.com")
@@ -85,13 +87,13 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 			var ter, _ = time.ParseDuration(sec)
 
 			if (i * adGapSeconds) <= noAdBeyondPoint {
-				adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 0, 30, "3", partnerUnitCodes, i, "midroll"))
+				adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 0, 30, "3", partnerUnitCodes, i, "midroll", scor))
 			}
 		}
 	} else if(duration > 300){
 		sec := fmt.Sprintf("%vs", 180)
 		var ter, _ = time.ParseDuration(sec)
-		adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 0, 30, "3", partnerUnitCodes, 1, "midroll"))
+		adBreaks = append(adBreaks, adBreakGenerator(vast.Duration(ter), descriptionUrl, "midroll", 0, 30, "3", partnerUnitCodes, 1, "midroll", scor))
 	}
 
 	// This sets the pre and post roll.
@@ -115,7 +117,7 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI: &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[0] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=30000&description_url=" + descriptionUrl + "&vpos=preroll&vad_type=linear&pp=realvision&cust_params=testing%3Dtrue",
+						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[0] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=30000&description_url=" + descriptionUrl + "&vpos=preroll&vad_type=linear&pp=realvision&cust_params=testing%3Dtrue&scor=" + strconv.Itoa(scor),
 					},
 					CustomAdData: nil,
 				},
@@ -138,7 +140,7 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI: &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[2] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=15000&description_url=" + descriptionUrl + "&vpos=postroll&vad_type=linear&pp=realvision",
+						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[2] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=30000&description_url=" + descriptionUrl + "&vpos=postroll&vad_type=linear&pp=realvision&scor=" + strconv.Itoa(scor),
 					},
 					CustomAdData: nil,
 				},
@@ -174,7 +176,7 @@ func getPartnerUnit(referrer string) [3]string {
 }
 
 // This generates optimized ad pods based on the duration of the video.
-func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId string, minSec int, maxSec int, maxPods string, adUnits[3]string, pod float64, vpos string) vmap.AdBreak {
+func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId string, minSec int, maxSec int, maxPods string, adUnits[3]string, pod float64, vpos string, scor int) vmap.AdBreak {
 	minSeconds := minSec * 1000
 	maxSeconds := maxSec * 1000
 
@@ -194,13 +196,14 @@ func adBreakGenerator(offset vast.Duration, descriptionUrl string, breakId strin
 			VASTAdData:       nil,
 			AdTagURI: &vmap.AdTagURI{
 				TemplateType: "vast3",
-				URI: fmt.Sprintf("https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + adUnits[1] + "&vad_type=linear&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=%s&pmnd=%v&pmxd=%v&pmad=%v&pod=%v&vpos=%v",
+				URI: fmt.Sprintf("https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + adUnits[1] + "&vad_type=linear&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&description_url=%s&pmnd=%v&pmxd=%v&pmad=%v&pod=%v&vpos=%v&scor=%v",
 					descriptionUrl,
 					minSeconds,
 					maxSeconds,
 					maxPods,
 					pod,
 					vpos,
+					scor,
 				),
 			},
 			CustomAdData: nil,
