@@ -1,5 +1,5 @@
 image:
-  tag: version-2.1.4
+  tag: version-2.2.3
 
 ingress:
   enabled: true
