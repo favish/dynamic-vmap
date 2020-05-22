@@ -117,7 +117,7 @@ func createVmap(w http.ResponseWriter, r *http.Request) {
 					VASTAdData:       nil,
 					AdTagURI: &vmap.AdTagURI{
 						TemplateType: "vast3",
-						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[0] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=30000&description_url=" + descriptionUrl + "&vpos=preroll&vad_type=linear&pp=realvision&cust_params=testing%3Dtrue&scor=" + strconv.Itoa(scor),
+						URI:          "https://pubads.g.doubleclick.net/gampad/ads?iu=/21841313772/" + partnerUnitCodes[0] + "&env=vp&impl=s&correlator=&tfcd=0&npa=0&gdfp_req=1&output=vast&sz=640x480&unviewed_position_start=1&max_ad_duration=120000&description_url=" + descriptionUrl + "&vpos=preroll&vad_type=linear&pp=realvision&cust_params=testing%3Dtrue&scor=" + strconv.Itoa(scor),
 					},
 					CustomAdData: nil,
 				},
